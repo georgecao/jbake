@@ -43,10 +43,21 @@ public class JBakeProperty {
     public static final String THYMELEAF_LOCALE = "thymeleaf.locale";
     public static final String URI_NO_EXTENSION = "uri.noExtension";
     public static final String URI_NO_EXTENSION_PREFIX = "uri.noExtension.prefix";
+    /**
+     * @see #RELATIVE_PATH_UPDATE
+     * @deprecated use {@link #RELATIVE_PATH_UPDATE} to cover all relative paths besides images.
+     */
     public static final String IMG_PATH_UPDATE = "img.path.update";
+    public static final String RELATIVE_PATH_UPDATE = "relative.path.update";
+    /**
+     * @see #RELATIVE_PATH_PREPEND_HOST
+     * @deprecated use {@link #RELATIVE_PATH_PREPEND_HOST} to cover all relative paths besides images.
+     */
     public static final String IMG_PATH_PREPEND_HOST = "img.path.prepend.host";
+    public static final String RELATIVE_PATH_PREPEND_HOST = "relative.path.prepend.host";
     public static final String VERSION = "version";
 
-    private JBakeProperty() {}
+    private JBakeProperty() {
+    }
 
 }

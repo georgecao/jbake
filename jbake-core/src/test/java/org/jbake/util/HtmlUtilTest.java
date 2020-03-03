@@ -7,7 +7,6 @@ import org.jbake.app.configuration.DefaultJBakeConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,12 +45,31 @@ public class HtmlUtilTest {
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
         fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /></div>");
         config.setImgPathPrependHost(false);
+        config.setRelativePathPrependHost(false);
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"blog/2017/05/first.jpg\"");
+
+    }
+
+    @Test
+    public void shouldNotAddSiteHostToLink() {
+        Map<String, Object> fileContent = new HashMap<String, Object>();
+        fileContent.put(Attributes.ROOTPATH, "../../../");
+        fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /><a href='second.html'>Second</a></div>");
+        config.setImgPathPrependHost(false);
+        config.setRelativePathPrependHost(false);
+
+        HtmlUtil.fixImageSourceUrls(fileContent, config);
+
+        String body = fileContent.get(Attributes.BODY).toString();
+
+        assertThat(body).contains("src=\"blog/2017/05/first.jpg\"");
+        assertThat(body).contains("src=\"blog/2017/05/second.html\"");
 
     }
 
