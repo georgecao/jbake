@@ -1,23 +1,22 @@
 package org.jbake.app;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.jbake.TestUtils;
 import org.jbake.app.configuration.ConfigUtil;
 import org.jbake.app.configuration.DefaultJBakeConfiguration;
+import org.jbake.app.configuration.JBakeConfiguration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +34,7 @@ public class ParserTest {
     private File validAsciiDocFile;
     private File invalidAsciiDocFile;
     private File validAsciiDocFileWithoutHeader;
+    private File validAsciiDocFileWithSourceCode;
     private File invalidAsciiDocFileWithoutHeader;
     private File validAsciiDocFileWithHeaderInContent;
     private File validAsciiDocFileWithoutJBakeMetaData;
@@ -87,6 +87,28 @@ public class ParserTest {
         out.println("Test User <user@test.org>");
         out.println("");
         out.println("JBake now supports AsciiDoc.");
+        out.close();
+
+        validAsciiDocFileWithSourceCode = folder.newFile("validwsource.ad");
+        out = new PrintWriter(validAsciiDocFileWithSourceCode);
+        out.println("= Hello: AsciiDoc!");
+        out.println("Test User <user@test.org>");
+        out.println("2013-09-02");
+        out.println(":jbake-status: published");
+        out.println(":jbake-type: page");
+        out.println("");
+        out.println("JBake now supports AsciiDoc.");
+        out.println("[source,java,linenums]");
+        out.println("----");
+        out.println("public class Test{");
+        out.println("    private int n;");
+        out.println("    private Object o;");
+        out.println("    public int getCount(){");
+        out.println("        return n;");
+        out.println("    }");
+        out.println("}");
+        out.println("----");
+        out.println("It's done!");
         out.close();
 
         validAsciiDocFileWithoutHeader = folder.newFile("validwoheader.ad");
@@ -289,8 +311,8 @@ public class ParserTest {
         Assert.assertEquals("draft", map.get("status"));
         Assert.assertEquals("post", map.get("type"));
         assertThat(map.get("body").toString())
-                .contains("class=\"paragraph\"")
-                .contains("<p>JBake now supports AsciiDoc.</p>");
+            .contains("class=\"paragraph\"")
+            .contains("<p>JBake now supports AsciiDoc.</p>");
 //        Assert.assertEquals("<div id=\"preamble\">\n<div class=\"sectionbody\">\n<div class=\"paragraph\">\n<p>JBake now supports AsciiDoc.</p>\n</div>\n</div>\n</div>", map.get("body"));
     }
 
@@ -301,7 +323,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseInvalidExtension(){
+    public void parseInvalidExtension() {
         Map<String, Object> map = parser.processFile(invalidExtensionFile);
         Assert.assertNull(map);
     }
@@ -314,9 +336,41 @@ public class ParserTest {
         Assert.assertEquals("published", map.get("status"));
         Assert.assertEquals("page", map.get("type"));
         assertThat(map.get("body").toString())
-                .contains("class=\"paragraph\"")
-                .contains("<p>JBake now supports AsciiDoc.</p>");
+            .contains("class=\"paragraph\"")
+            .contains("<p>JBake now supports AsciiDoc.</p>");
 //        Assert.assertEquals("<div id=\"preamble\">\n<div class=\"sectionbody\">\n<div class=\"paragraph\">\n<p>JBake now supports AsciiDoc.</p>\n</div>\n</div>\n</div>", map.get("body"));
+    }
+
+    @Test
+    public void parseValidAsciiDocFileWithSourceCode() throws ConfigurationException {
+        // https://asciidoctor.org/docs/user-manual/#source-code-blocks
+        // and AsciidoctorJ only support prettify,highlightjs,coderay
+        File rootPath = TestUtils.getTestResourcesAsSourceFolder();
+        DefaultJBakeConfiguration config = (DefaultJBakeConfiguration) new ConfigUtil().loadConfig(rootPath);
+        // source-highlighter=prettify
+        String attributes = "source-highlighter=prettify";
+        JBakeConfiguration conf = new Config(config, attributes);
+        Parser parser = new Parser(conf);
+        Map<String, Object> map = parser.processFile(validAsciiDocFileWithSourceCode);
+        String body = map.get("body").toString();
+        System.out.println(body);
+        assertThat(body).contains("prettyprint");
+
+        attributes = "source-highlighter=coderay,coderay-css=style,coderay-linenums-mode=inline";
+        conf = new Config(config, attributes);
+        parser = new Parser(conf);
+        map = parser.processFile(validAsciiDocFileWithSourceCode);
+        body = map.get("body").toString();
+        System.out.println(body);
+        assertThat(body).contains("CodeRay");
+
+        attributes = "source-highlighter=highlightjs";
+        conf = new Config(config, attributes);
+        parser = new Parser(conf);
+        map = parser.processFile(validAsciiDocFileWithSourceCode);
+        body = map.get("body").toString();
+        System.out.println(body);
+        assertThat(body).contains("highlightjs");
     }
 
     @Test
@@ -332,14 +386,14 @@ public class ParserTest {
         Assert.assertEquals("published", map.get("status"));
         Assert.assertEquals("page", map.get("type"));
         assertThat(map.get("body").toString())
-                .contains("class=\"paragraph\"")
-                .contains("<p>JBake now supports AsciiDoc.</p>")
-                .contains("class=\"listingblock\"")
-                .contains("class=\"content\"")
-                .contains("<pre>")
-                .contains("title=Example Header")
-                .contains("date=2013-02-01")
-                .contains("tags=tag1, tag2");
+            .contains("class=\"paragraph\"")
+            .contains("<p>JBake now supports AsciiDoc.</p>")
+            .contains("class=\"listingblock\"")
+            .contains("class=\"content\"")
+            .contains("<pre>")
+            .contains("title=Example Header")
+            .contains("date=2013-02-01")
+            .contains("tags=tag1, tag2");
 //        Assert.assertEquals("<div id=\"preamble\">\n<div class=\"sectionbody\">\n<div class=\"paragraph\">\n<p>JBake now supports AsciiDoc.</p>\n</div>\n<div class=\"listingblock\">\n<div class=\"content\">\n<pre>title=Example Header\ndate=2013-02-01\ntype=post\ntags=tag1, tag2\nstatus=published\n~~~~~~</pre>\n</div>\n</div>\n</div>\n</div>", map.get("body"));
     }
 
@@ -353,7 +407,7 @@ public class ParserTest {
         Assert.assertEquals("published", map.get("status"));
         Assert.assertEquals("page", map.get("type"));
         assertThat(map.get("body").toString())
-                .contains("<p>JBake now supports AsciiDoc documents without JBake meta data.</p>");
+            .contains("<p>JBake now supports AsciiDoc documents without JBake meta data.</p>");
     }
 
     @Test
@@ -365,7 +419,7 @@ public class ParserTest {
         Assert.assertEquals("draft", map.get("status"));
         Assert.assertEquals("post", map.get("type"));
         assertThat(map.get("body").toString())
-                .contains("<p>A paragraph</p>");
+            .contains("<p>A paragraph</p>");
 
     }
 
@@ -428,17 +482,326 @@ public class ParserTest {
         JSONObject jsonData = (JSONObject) jsonDataEntry;
         assertThat(jsonData.containsKey("numberValue")).isTrue();
         assertThat(jsonData.get("numberValue")).isInstanceOf(Number.class);
-        assertThat(((Number)jsonData.get("numberValue")).intValue()).isEqualTo(42);
+        assertThat(((Number) jsonData.get("numberValue")).intValue()).isEqualTo(42);
         assertThat(jsonData.containsKey("stringValue")).isTrue();
         assertThat(jsonData.get("stringValue")).isInstanceOf(String.class);
-        assertThat((String)jsonData.get("stringValue")).isEqualTo("Answer to live, the universe and everything");
+        assertThat((String) jsonData.get("stringValue")).isEqualTo("Answer to live, the universe and everything");
         assertThat(jsonData.containsKey("nullValue")).isTrue();
         assertThat(jsonData.get("nullValue")).isNull();
         assertThat(jsonData.containsKey("arrayValue")).isTrue();
         assertThat(jsonData.get("arrayValue")).isInstanceOf(JSONArray.class);
-        assertThat((JSONArray)jsonData.get("arrayValue")).contains(1L,2L);
+        assertThat((JSONArray) jsonData.get("arrayValue")).contains(1L, 2L);
         assertThat(jsonData.containsKey("objectValue")).isTrue();
         assertThat(jsonData.get("objectValue")).isInstanceOf(JSONObject.class);
-        assertThat((JSONObject)jsonData.get("objectValue")).contains(new SimpleEntry("val1", 1L), new SimpleEntry("val2", 2L));
+        assertThat((JSONObject) jsonData.get("objectValue")).contains(new SimpleEntry("val1", 1L), new SimpleEntry("val2", 2L));
+    }
+
+    private class Config implements JBakeConfiguration {
+        private final JBakeConfiguration delegate;
+        private final List<String> attributes;
+
+        public Config(JBakeConfiguration delegate, String attributes) {
+            this(delegate, Arrays.asList(attributes.split("\\s*,\\s*")));
+        }
+
+        public Config(JBakeConfiguration delegate, List<String> attributes) {
+            this.delegate = delegate;
+            this.attributes = attributes;
+        }
+
+        @Override
+        public Object get(String key) {
+            return delegate.get(key);
+        }
+
+        @Override
+        public String getArchiveFileName() {
+            return delegate.getArchiveFileName();
+        }
+
+        @Override
+        public List<String> getAsciidoctorAttributes() {
+            return this.attributes;
+        }
+
+        @Override
+        public Object getAsciidoctorOption(String optionKey) {
+            return delegate.getAsciidoctorOption(optionKey);
+        }
+
+        @Override
+        public List<String> getAsciidoctorOptionKeys() {
+            return delegate.getAsciidoctorOptionKeys();
+        }
+
+        @Override
+        public File getAssetFolder() {
+            return delegate.getAssetFolder();
+        }
+
+        @Override
+        public String getAssetFolderName() {
+            return delegate.getAssetFolderName();
+        }
+
+        @Override
+        public boolean getAssetIgnoreHidden() {
+            return delegate.getAssetIgnoreHidden();
+        }
+
+        @Override
+        public String getAttributesExportPrefixForAsciidoctor() {
+            return delegate.getAttributesExportPrefixForAsciidoctor();
+        }
+
+        @Override
+        public String getBuildTimeStamp() {
+            return delegate.getBuildTimeStamp();
+        }
+
+        @Override
+        public boolean getClearCache() {
+            return delegate.getClearCache();
+        }
+
+        @Override
+        public File getContentFolder() {
+            return delegate.getContentFolder();
+        }
+
+        @Override
+        public String getContentFolderName() {
+            return delegate.getContentFolderName();
+        }
+
+        @Override
+        public String getDatabasePath() {
+            return delegate.getDatabasePath();
+        }
+
+        @Override
+        public String getDatabaseStore() {
+            return delegate.getDatabaseStore();
+        }
+
+        @Override
+        public String getDateFormat() {
+            return delegate.getDateFormat();
+        }
+
+        @Override
+        public String getDefaultStatus() {
+            return delegate.getDefaultStatus();
+        }
+
+        @Override
+        public String getDefaultType() {
+            return delegate.getDefaultType();
+        }
+
+        @Override
+        public File getDestinationFolder() {
+            return delegate.getDestinationFolder();
+        }
+
+        @Override
+        public void setDestinationFolder(File destination) {
+            delegate.setDestinationFolder(destination);
+        }
+
+        @Override
+        public List<String> getDocumentTypes() {
+            return delegate.getDocumentTypes();
+        }
+
+        @Override
+        public String getDraftSuffix() {
+            return delegate.getDraftSuffix();
+        }
+
+        @Override
+        public String getExampleProjectByType(String templateType) {
+            return delegate.getExampleProjectByType(templateType);
+        }
+
+        @Override
+        public boolean getExportAsciidoctorAttributes() {
+            return delegate.getExportAsciidoctorAttributes();
+        }
+
+        @Override
+        public String getFeedFileName() {
+            return delegate.getFeedFileName();
+        }
+
+        @Override
+        public String getHeaderSeparator() {
+            return delegate.getHeaderSeparator();
+        }
+
+        @Override
+        public String getIndexFileName() {
+            return delegate.getIndexFileName();
+        }
+
+        @Override
+        public Iterator<String> getKeys() {
+            return delegate.getKeys();
+        }
+
+        @Override
+        public List<String> getMarkdownExtensions() {
+            return delegate.getMarkdownExtensions();
+        }
+
+        @Override
+        public String getOutputExtension() {
+            return delegate.getOutputExtension();
+        }
+
+        @Override
+        public String getOutputExtensionByDocType(String docType) {
+            return delegate.getOutputExtensionByDocType(docType);
+        }
+
+        @Override
+        public boolean getPaginateIndex() {
+            return delegate.getPaginateIndex();
+        }
+
+        @Override
+        public int getPostsPerPage() {
+            return delegate.getPostsPerPage();
+        }
+
+        @Override
+        public String getPrefixForUriWithoutExtension() {
+            return delegate.getPrefixForUriWithoutExtension();
+        }
+
+        @Override
+        public boolean getRenderArchive() {
+            return delegate.getRenderArchive();
+        }
+
+        @Override
+        public String getRenderEncoding() {
+            return delegate.getRenderEncoding();
+        }
+
+        @Override
+        public boolean getRenderFeed() {
+            return delegate.getRenderFeed();
+        }
+
+        @Override
+        public boolean getRenderIndex() {
+            return delegate.getRenderIndex();
+        }
+
+        @Override
+        public boolean getRenderSiteMap() {
+            return delegate.getRenderSiteMap();
+        }
+
+        @Override
+        public boolean getRenderTags() {
+            return delegate.getRenderTags();
+        }
+
+        @Override
+        public boolean getRenderTagsIndex() {
+            return delegate.getRenderTagsIndex();
+        }
+
+        @Override
+        public boolean getSanitizeTag() {
+            return delegate.getSanitizeTag();
+        }
+
+        @Override
+        public int getServerPort() {
+            return delegate.getServerPort();
+        }
+
+        @Override
+        public String getSiteHost() {
+            return delegate.getSiteHost();
+        }
+
+        @Override
+        public String getSiteMapFileName() {
+            return delegate.getSiteMapFileName();
+        }
+
+        @Override
+        public File getSourceFolder() {
+            return delegate.getSourceFolder();
+        }
+
+        @Override
+        public String getTagPathName() {
+            return delegate.getTagPathName();
+        }
+
+        @Override
+        public String getTemplateEncoding() {
+            return delegate.getTemplateEncoding();
+        }
+
+        @Override
+        public File getTemplateFileByDocType(String masterindex) {
+            return delegate.getTemplateFileByDocType(masterindex);
+        }
+
+        @Override
+        public File getTemplateFolder() {
+            return delegate.getTemplateFolder();
+        }
+
+        @Override
+        public String getTemplateFolderName() {
+            return delegate.getTemplateFolderName();
+        }
+
+        @Override
+        public String getThymeleafLocale() {
+            return delegate.getThymeleafLocale();
+        }
+
+        @Override
+        public boolean getUriWithoutExtension() {
+            return delegate.getUriWithoutExtension();
+        }
+
+        @Override
+        public boolean getImgPathPrependHost() {
+            return delegate.getImgPathPrependHost();
+        }
+
+        @Override
+        public boolean getImgPathUpdate() {
+            return delegate.getImgPathUpdate();
+        }
+
+        @Override
+        public boolean getRelativePathUpdate() {
+            return delegate.getRelativePathUpdate();
+        }
+
+        @Override
+        public boolean getRelativePathPrependHost() {
+            return delegate.getRelativePathPrependHost();
+        }
+
+        @Override
+        public String getVersion() {
+            return delegate.getVersion();
+        }
+
+        @Override
+        public void setProperty(String key, Object value) {
+            delegate.setProperty(key, value);
+        }
     }
 }

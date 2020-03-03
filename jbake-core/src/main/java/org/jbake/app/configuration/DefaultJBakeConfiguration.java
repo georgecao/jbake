@@ -529,19 +529,37 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public boolean getImgPathPrependHost() {
-        return getAsBoolean(JBakeProperty.IMG_PATH_PREPEND_HOST);
+        return getRelativePathPrependHost();
     }
 
     public void setImgPathPrependHost(boolean imgPathPrependHost) {
-        setProperty(JBakeProperty.IMG_PATH_PREPEND_HOST, imgPathPrependHost);
+        setRelativePathPrependHost(imgPathPrependHost);
     }
 
     @Override
     public boolean getImgPathUpdate() {
-        return getAsBoolean(JBakeProperty.IMG_PATH_UPDATE);
+        return getRelativePathUpdate();
     }
 
-    public void setImgPathUPdate(boolean imgPathUpdate) {
-        setProperty(JBakeProperty.IMG_PATH_UPDATE, imgPathUpdate);
+    public void setImgPathUpdate(boolean imgPathUpdate) {
+        setRelativePathUpdate(imgPathUpdate);
+    }
+
+    @Override
+    public boolean getRelativePathUpdate() {
+        return getAsBoolean(JBakeProperty.RELATIVE_PATH_UPDATE);
+    }
+
+    public void setRelativePathUpdate(boolean relativePathUpdate) {
+        setProperty(JBakeProperty.RELATIVE_PATH_UPDATE, relativePathUpdate);
+    }
+
+    @Override
+    public boolean getRelativePathPrependHost() {
+        return getAsBoolean(JBakeProperty.RELATIVE_PATH_PREPEND_HOST);
+    }
+
+    public void setRelativePathPrependHost(boolean relativePathPrependHost) {
+        setProperty(JBakeProperty.RELATIVE_PATH_PREPEND_HOST, relativePathPrependHost);
     }
 }

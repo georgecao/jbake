@@ -7,7 +7,6 @@ import org.jbake.app.configuration.DefaultJBakeConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,14 +43,32 @@ public class HtmlUtilTest {
         Map<String, Object> fileContent = new HashMap<String, Object>();
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /></div>");
-        config.setImgPathPrependHost(false);
+        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /><a href='./second.html'>Second</a></div>");
+        config.setRelativePathPrependHost(false);
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"blog/2017/05/first.jpg\"");
+        assertThat(body).contains("href=\"blog/2017/05/second.html\"");
+
+    }
+
+    @Test
+    public void shouldNotAddSiteHostToLink() {
+        Map<String, Object> fileContent = new HashMap<String, Object>();
+        fileContent.put(Attributes.ROOTPATH, "../../../");
+        fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /><a href='second.html'>Second</a></div>");
+        config.setRelativePathPrependHost(false);
+
+        HtmlUtil.fixImageSourceUrls(fileContent, config);
+
+        String body = fileContent.get(Attributes.BODY).toString();
+
+        assertThat(body).contains("src=\"blog/2017/05/first.jpg\"");
+        assertThat(body).contains("href=\"blog/2017/05/second.html\"");
 
     }
 
@@ -75,13 +92,14 @@ public class HtmlUtilTest {
         Map<String, Object> fileContent = new HashMap<String, Object>();
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /><a href='./second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://www.jbake.org/blog/2017/05/first.jpg\"");
+        assertThat(body).contains("href=\"http://www.jbake.org/blog/2017/05/second.html\"");
 
     }
 
@@ -90,13 +108,14 @@ public class HtmlUtilTest {
         Map<String, Object> fileContent = new HashMap<String, Object>();
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='first.jpg' /><a href='second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://www.jbake.org/blog/2017/05/first.jpg\"");
+        assertThat(body).contains("href=\"http://www.jbake.org/blog/2017/05/second.html\"");
 
     }
 
@@ -105,14 +124,14 @@ public class HtmlUtilTest {
         Map<String, Object> fileContent = new HashMap<String, Object>();
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='/blog/2017/05/first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='/blog/2017/05/first.jpg' /><a href='/blog/2017/05/second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://www.jbake.org/blog/2017/05/first.jpg\"");
-
+        assertThat(body).contains("href=\"http://www.jbake.org/blog/2017/05/second.html\"");
     }
 
     @Test
@@ -121,14 +140,14 @@ public class HtmlUtilTest {
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
         fileContent.put(Attributes.NO_EXTENSION_URI, "blog/2017/05/first_post/");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='/blog/2017/05/first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='/blog/2017/05/first.jpg' /><a href='/blog/2017/05/second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://www.jbake.org/blog/2017/05/first.jpg\"");
-
+        assertThat(body).contains("href=\"http://www.jbake.org/blog/2017/05/second.html\"");
     }
 
     @Test
@@ -137,13 +156,14 @@ public class HtmlUtilTest {
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
         fileContent.put(Attributes.NO_EXTENSION_URI, "blog/2017/05/first_post/");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='./first.jpg' /><a href='./second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://www.jbake.org/blog/2017/05/first.jpg\"");
+        assertThat(body).contains("href=\"http://www.jbake.org/blog/2017/05/second.html\"");
     }
 
     @Test
@@ -152,13 +172,14 @@ public class HtmlUtilTest {
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
         fileContent.put(Attributes.NO_EXTENSION_URI, "blog/2017/05/first_post/");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='http://example.com/first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='http://example.com/first.jpg' /><a href='http://example.com/second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"http://example.com/first.jpg\"");
+        assertThat(body).contains("href=\"http://example.com/second.html\"");
 
     }
 
@@ -168,12 +189,13 @@ public class HtmlUtilTest {
         fileContent.put(Attributes.ROOTPATH, "../../../");
         fileContent.put(Attributes.URI, "blog/2017/05/first_post.html");
         fileContent.put(Attributes.NO_EXTENSION_URI, "blog/2017/05/first_post/");
-        fileContent.put(Attributes.BODY, "<div> Test <img src='https://example.com/first.jpg' /></div>");
+        fileContent.put(Attributes.BODY, "<div> Test <img src='https://example.com/first.jpg' /><a href='https://example.com/second.html'>Second</a></div>");
 
         HtmlUtil.fixImageSourceUrls(fileContent, config);
 
         String body = fileContent.get(Attributes.BODY).toString();
 
         assertThat(body).contains("src=\"https://example.com/first.jpg\"");
+        assertThat(body).contains("href=\"https://example.com/second.html\"");
     }
 }
