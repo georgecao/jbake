@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.jbake.app.configuration.JBakeProperty.*;
+
 /**
  * The default implementation of a {@link JBakeConfiguration}
  */
@@ -61,7 +63,11 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     }
 
     private boolean getAsBoolean(String key) {
-        return compositeConfiguration.getBoolean(key, false);
+        return getAsBoolean(key, false);
+    }
+
+    private boolean getAsBoolean(String key, boolean defaultValue) {
+        return compositeConfiguration.getBoolean(key, defaultValue);
     }
 
     private File getAsFolder(String key) {
@@ -547,19 +553,23 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public boolean getRelativePathUpdate() {
-        return getAsBoolean(JBakeProperty.RELATIVE_PATH_UPDATE);
+        // We use the old property as default value in case the new property is not used.
+        boolean value = getAsBoolean(IMG_PATH_UPDATE);
+        return getAsBoolean(RELATIVE_PATH_UPDATE, value);
     }
 
     public void setRelativePathUpdate(boolean relativePathUpdate) {
-        setProperty(JBakeProperty.RELATIVE_PATH_UPDATE, relativePathUpdate);
+        setProperty(RELATIVE_PATH_UPDATE, relativePathUpdate);
     }
 
     @Override
     public boolean getRelativePathPrependHost() {
-        return getAsBoolean(JBakeProperty.RELATIVE_PATH_PREPEND_HOST);
+        // We use the old property as default value in case the new property is not used.
+        boolean value = getAsBoolean(IMG_PATH_PREPEND_HOST);
+        return getAsBoolean(RELATIVE_PATH_PREPEND_HOST, value);
     }
 
     public void setRelativePathPrependHost(boolean relativePathPrependHost) {
-        setProperty(JBakeProperty.RELATIVE_PATH_PREPEND_HOST, relativePathPrependHost);
+        setProperty(RELATIVE_PATH_PREPEND_HOST, relativePathPrependHost);
     }
 }
