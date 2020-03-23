@@ -59,7 +59,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public String getArchiveFileName() {
-        return getAsString(JBakeProperty.ARCHIVE_FILE);
+        return getAsString(ARCHIVE_FILE);
     }
 
     private boolean getAsBoolean(String key) {
@@ -92,15 +92,15 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public List<String> getAsciidoctorAttributes() {
-        return getAsList(JBakeProperty.ASCIIDOCTOR_ATTRIBUTES);
+        return getAsList(ASCIIDOCTOR_ATTRIBUTES);
     }
 
     public Object getAsciidoctorOption(String optionKey) {
-        Configuration subConfig = compositeConfiguration.subset(JBakeProperty.ASCIIDOCTOR_OPTION);
+        Configuration subConfig = compositeConfiguration.subset(ASCIIDOCTOR_OPTION);
         Object value = subConfig.getProperty(optionKey);
 
         if (value == null) {
-            logger.warn("Cannot find asciidoctor option '{}.{}'", JBakeProperty.ASCIIDOCTOR_OPTION, optionKey);
+            logger.warn("Cannot find asciidoctor option '{}.{}'", ASCIIDOCTOR_OPTION, optionKey);
             return "";
         }
         return value;
@@ -109,7 +109,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     @Override
     public List<String> getAsciidoctorOptionKeys() {
         List<String> options = new ArrayList<>();
-        Configuration subConfig = compositeConfiguration.subset(JBakeProperty.ASCIIDOCTOR_OPTION);
+        Configuration subConfig = compositeConfiguration.subset(ASCIIDOCTOR_OPTION);
 
         Iterator<String> iterator = subConfig.getKeys();
         while (iterator.hasNext()) {
@@ -128,41 +128,41 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     public void setAssetFolder(File assetFolder) {
         if (assetFolder != null) {
             setProperty(ASSET_FOLDER_KEY, assetFolder);
-            setProperty(JBakeProperty.ASSET_FOLDER, assetFolder.getName());
+            setProperty(ASSET_FOLDER, assetFolder.getName());
         }
     }
 
     @Override
     public String getAssetFolderName() {
-        return getAsString(JBakeProperty.ASSET_FOLDER);
+        return getAsString(ASSET_FOLDER);
     }
 
     @Override
     public boolean getAssetIgnoreHidden() {
-        return getAsBoolean(JBakeProperty.ASSET_IGNORE_HIDDEN);
+        return getAsBoolean(ASSET_IGNORE_HIDDEN);
     }
 
     public void setAssetIgnoreHidden(boolean assetIgnoreHidden) {
-        setProperty(JBakeProperty.ASSET_IGNORE_HIDDEN, assetIgnoreHidden);
+        setProperty(ASSET_IGNORE_HIDDEN, assetIgnoreHidden);
     }
 
     @Override
     public String getAttributesExportPrefixForAsciidoctor() {
-        return getAsString(JBakeProperty.ASCIIDOCTOR_ATTRIBUTES_EXPORT_PREFIX, "");
+        return getAsString(ASCIIDOCTOR_ATTRIBUTES_EXPORT_PREFIX, "");
     }
 
     @Override
     public String getBuildTimeStamp() {
-        return getAsString(JBakeProperty.BUILD_TIMESTAMP);
+        return getAsString(BUILD_TIMESTAMP);
     }
 
     @Override
     public boolean getClearCache() {
-        return getAsBoolean(JBakeProperty.CLEAR_CACHE);
+        return getAsBoolean(CLEAR_CACHE);
     }
 
     public void setClearCache(boolean clearCache) {
-        setProperty(JBakeProperty.CLEAR_CACHE, clearCache);
+        setProperty(CLEAR_CACHE, clearCache);
     }
 
     public CompositeConfiguration getCompositeConfiguration() {
@@ -181,54 +181,54 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     public void setContentFolder(File contentFolder) {
         if (contentFolder != null) {
             setProperty(CONTENT_FOLDER_KEY, contentFolder);
-            setProperty(JBakeProperty.CONTENT_FOLDER, contentFolder.getName());
+            setProperty(CONTENT_FOLDER, contentFolder.getName());
         }
     }
 
     @Override
     public String getContentFolderName() {
-        return getAsString(JBakeProperty.CONTENT_FOLDER);
+        return getAsString(CONTENT_FOLDER);
     }
 
     @Override
     public String getDatabasePath() {
-        return getAsString(JBakeProperty.DB_PATH);
+        return getAsString(DB_PATH);
     }
 
     public void setDatabasePath(String path) {
-        setProperty(JBakeProperty.DB_PATH, path);
+        setProperty(DB_PATH, path);
     }
 
     @Override
     public String getDatabaseStore() {
-        return getAsString(JBakeProperty.DB_STORE);
+        return getAsString(DB_STORE);
     }
 
     public void setDatabaseStore(String storeType) {
-        setProperty(JBakeProperty.DB_STORE, storeType);
+        setProperty(DB_STORE, storeType);
     }
 
     @Override
     public String getDateFormat() {
-        return getAsString(JBakeProperty.DATE_FORMAT);
+        return getAsString(DATE_FORMAT);
     }
 
     @Override
     public String getDefaultStatus() {
-        return getAsString(JBakeProperty.DEFAULT_STATUS, "");
+        return getAsString(DEFAULT_STATUS, "");
     }
 
     public void setDefaultStatus(String status) {
-        setProperty(JBakeProperty.DEFAULT_STATUS, status);
+        setProperty(DEFAULT_STATUS, status);
     }
 
     @Override
     public String getDefaultType() {
-        return getAsString(JBakeProperty.DEFAULT_TYPE, "");
+        return getAsString(DEFAULT_TYPE, "");
     }
 
     public void setDefaultType(String type) {
-        setProperty(JBakeProperty.DEFAULT_TYPE, type);
+        setProperty(DEFAULT_TYPE, type);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     public void setDestinationFolder(File destinationFolder) {
         if (destinationFolder != null) {
             setProperty(DESTINATION_FOLDER_KEY, destinationFolder);
-            setProperty(JBakeProperty.DESTINATION_FOLDER, destinationFolder.getName());
+            setProperty(DESTINATION_FOLDER, destinationFolder.getName());
         }
     }
 
@@ -260,7 +260,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public String getDraftSuffix() {
-        return getAsString(JBakeProperty.DRAFT_SUFFIX, "");
+        return getAsString(DRAFT_SUFFIX, "");
     }
 
     @Override
@@ -270,17 +270,17 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public boolean getExportAsciidoctorAttributes() {
-        return getAsBoolean(JBakeProperty.ASCIIDOCTOR_ATTRIBUTES_EXPORT);
+        return getAsBoolean(ASCIIDOCTOR_ATTRIBUTES_EXPORT);
     }
 
     @Override
     public String getFeedFileName() {
-        return getAsString(JBakeProperty.FEED_FILE);
+        return getAsString(FEED_FILE);
     }
 
     @Override
     public String getIndexFileName() {
-        return getAsString(JBakeProperty.INDEX_FILE);
+        return getAsString(INDEX_FILE);
     }
 
     @Override
@@ -290,20 +290,20 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public List<String> getMarkdownExtensions() {
-        return getAsList(JBakeProperty.MARKDOWN_EXTENSIONS);
+        return getAsList(MARKDOWN_EXTENSIONS);
     }
 
     public void setMarkdownExtensions(String... extensions) {
-        setProperty(JBakeProperty.MARKDOWN_EXTENSIONS, StringUtils.join(extensions, ","));
+        setProperty(MARKDOWN_EXTENSIONS, StringUtils.join(extensions, ","));
     }
 
     @Override
     public String getOutputExtension() {
-        return getAsString(JBakeProperty.OUTPUT_EXTENSION);
+        return getAsString(OUTPUT_EXTENSION);
     }
 
     public void setOutputExtension(String outputExtension) {
-        setProperty(JBakeProperty.OUTPUT_EXTENSION, outputExtension);
+        setProperty(OUTPUT_EXTENSION, outputExtension);
     }
 
     @Override
@@ -315,96 +315,96 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public boolean getPaginateIndex() {
-        return getAsBoolean(JBakeProperty.PAGINATE_INDEX);
+        return getAsBoolean(PAGINATE_INDEX);
     }
 
     public void setPaginateIndex(boolean paginateIndex) {
-        setProperty(JBakeProperty.PAGINATE_INDEX, paginateIndex);
+        setProperty(PAGINATE_INDEX, paginateIndex);
     }
 
     @Override
     public int getPostsPerPage() {
-        return getAsInt(JBakeProperty.POSTS_PER_PAGE, 5);
+        return getAsInt(POSTS_PER_PAGE, 5);
     }
 
     public void setPostsPerPage(int postsPerPage) {
-        setProperty(JBakeProperty.POSTS_PER_PAGE, postsPerPage);
+        setProperty(POSTS_PER_PAGE, postsPerPage);
     }
 
     @Override
     public String getPrefixForUriWithoutExtension() {
-        return getAsString(JBakeProperty.URI_NO_EXTENSION_PREFIX);
+        return getAsString(URI_NO_EXTENSION_PREFIX);
     }
 
     public void setPrefixForUriWithoutExtension(String prefix) {
-        setProperty(JBakeProperty.URI_NO_EXTENSION_PREFIX, prefix);
+        setProperty(URI_NO_EXTENSION_PREFIX, prefix);
     }
 
     @Override
     public boolean getRenderArchive() {
-        return getAsBoolean(JBakeProperty.RENDER_ARCHIVE);
+        return getAsBoolean(RENDER_ARCHIVE);
     }
 
     @Override
     public String getRenderEncoding() {
-        return getAsString(JBakeProperty.RENDER_ENCODING);
+        return getAsString(RENDER_ENCODING);
     }
 
     @Override
     public boolean getRenderFeed() {
-        return getAsBoolean(JBakeProperty.RENDER_FEED);
+        return getAsBoolean(RENDER_FEED);
     }
 
     @Override
     public boolean getRenderIndex() {
-        return getAsBoolean(JBakeProperty.RENDER_INDEX);
+        return getAsBoolean(RENDER_INDEX);
     }
 
     @Override
     public boolean getRenderSiteMap() {
-        return getAsBoolean(JBakeProperty.RENDER_SITEMAP);
+        return getAsBoolean(RENDER_SITEMAP);
     }
 
     @Override
     public boolean getRenderTags() {
-        return getAsBoolean(JBakeProperty.RENDER_TAGS);
+        return getAsBoolean(RENDER_TAGS);
     }
 
     @Override
     public boolean getRenderTagsIndex() {
-        return compositeConfiguration.getBoolean(JBakeProperty.RENDER_TAGS_INDEX, false);
+        return compositeConfiguration.getBoolean(RENDER_TAGS_INDEX, false);
     }
 
     public void setRenderTagsIndex(boolean enable) {
-        compositeConfiguration.setProperty(JBakeProperty.RENDER_TAGS_INDEX, enable);
+        compositeConfiguration.setProperty(RENDER_TAGS_INDEX, enable);
     }
 
     @Override
     public boolean getSanitizeTag() {
-        return getAsBoolean(JBakeProperty.TAG_SANITIZE);
+        return getAsBoolean(TAG_SANITIZE);
     }
 
     @Override
     public int getServerPort() {
-        return getAsInt(JBakeProperty.SERVER_PORT, 8080);
+        return getAsInt(SERVER_PORT, 8080);
     }
 
     public void setServerPort(int port) {
-        setProperty(JBakeProperty.SERVER_PORT, port);
+        setProperty(SERVER_PORT, port);
     }
 
     @Override
     public String getSiteHost() {
-        return getAsString(JBakeProperty.SITE_HOST, "http://www.jbake.org");
+        return getAsString(SITE_HOST, "http://www.jbake.org");
     }
 
     public void setSiteHost(String siteHost) {
-        setProperty(JBakeProperty.SITE_HOST, siteHost);
+        setProperty(SITE_HOST, siteHost);
     }
 
     @Override
     public String getSiteMapFileName() {
-        return getAsString(JBakeProperty.SITEMAP_FILE);
+        return getAsString(SITEMAP_FILE);
     }
 
     @Override
@@ -419,12 +419,12 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public String getTagPathName() {
-        return getAsString(JBakeProperty.TAG_PATH);
+        return getAsString(TAG_PATH);
     }
 
     @Override
     public String getTemplateEncoding() {
-        return getAsString(JBakeProperty.TEMPLATE_ENCODING);
+        return getAsString(TEMPLATE_ENCODING);
     }
 
     @Override
@@ -446,36 +446,36 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     public void setTemplateFolder(File templateFolder) {
         if (templateFolder != null) {
             setProperty(TEMPLATE_FOLDER_KEY, templateFolder);
-            setProperty(JBakeProperty.TEMPLATE_FOLDER, templateFolder.getName());
+            setProperty(TEMPLATE_FOLDER, templateFolder.getName());
         }
     }
 
     @Override
     public String getTemplateFolderName() {
-        return getAsString(JBakeProperty.TEMPLATE_FOLDER);
+        return getAsString(TEMPLATE_FOLDER);
     }
 
     @Override
     public String getThymeleafLocale() {
-        return getAsString(JBakeProperty.THYMELEAF_LOCALE);
+        return getAsString(THYMELEAF_LOCALE);
     }
 
     @Override
     public boolean getUriWithoutExtension() {
-        return getAsBoolean(JBakeProperty.URI_NO_EXTENSION);
+        return getAsBoolean(URI_NO_EXTENSION);
     }
 
     public void setUriWithoutExtension(boolean withoutExtension) {
-        setProperty(JBakeProperty.URI_NO_EXTENSION, withoutExtension);
+        setProperty(URI_NO_EXTENSION, withoutExtension);
     }
 
     @Override
     public String getVersion() {
-        return getAsString(JBakeProperty.VERSION);
+        return getAsString(VERSION);
     }
 
     public void setDestinationFolderName(String folderName) {
-        setProperty(JBakeProperty.DESTINATION_FOLDER, folderName);
+        setProperty(DESTINATION_FOLDER, folderName);
         setupDefaultDestination();
     }
 
@@ -500,7 +500,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     }
 
     private void setupDefaultAssetFolder() {
-        String assetFolder = getAsString(JBakeProperty.ASSET_FOLDER);
+        String assetFolder = getAsString(ASSET_FOLDER);
         setAssetFolder(new File(getSourceFolder(), assetFolder));
     }
 
@@ -509,12 +509,12 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     }
 
     private void setupDefaultDestination() {
-        String destinationPath = getAsString(JBakeProperty.DESTINATION_FOLDER);
+        String destinationPath = getAsString(DESTINATION_FOLDER);
         setDestinationFolder(new File(getSourceFolder(), destinationPath));
     }
 
     private void setupDefaultTemplateFolder() {
-        String destinationPath = getAsString(JBakeProperty.TEMPLATE_FOLDER);
+        String destinationPath = getAsString(TEMPLATE_FOLDER);
         setTemplateFolder(new File(getSourceFolder(), destinationPath));
     }
 
@@ -526,36 +526,34 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public String getHeaderSeparator() {
-        return getAsString(JBakeProperty.HEADER_SEPARATOR);
+        return getAsString(HEADER_SEPARATOR);
     }
 
     public void setHeaderSeparator(String headerSeparator) {
-        setProperty(JBakeProperty.HEADER_SEPARATOR, headerSeparator);
+        setProperty(HEADER_SEPARATOR, headerSeparator);
     }
 
     @Override
     public boolean getImgPathPrependHost() {
-        return getRelativePathPrependHost();
+        return getAsBooleanDefaultTrue(IMG_PATH_PREPEND_HOST, RELATIVE_PATH_PREPEND_HOST);
     }
 
     public void setImgPathPrependHost(boolean imgPathPrependHost) {
-        setRelativePathPrependHost(imgPathPrependHost);
+        setProperty(IMG_PATH_PREPEND_HOST, imgPathPrependHost);
     }
 
     @Override
     public boolean getImgPathUpdate() {
-        return getRelativePathUpdate();
+        return getAsBooleanDefaultFalse(IMG_PATH_UPDATE, RELATIVE_PATH_UPDATE);
     }
 
     public void setImgPathUpdate(boolean imgPathUpdate) {
-        setRelativePathUpdate(imgPathUpdate);
+        setProperty(IMG_PATH_UPDATE, imgPathUpdate);
     }
 
     @Override
     public boolean getRelativePathUpdate() {
-        // We use the old property as default value in case the new property is not used.
-        boolean value = getAsBoolean(IMG_PATH_UPDATE);
-        return getAsBoolean(RELATIVE_PATH_UPDATE, value);
+        return getAsBooleanDefaultFalse(RELATIVE_PATH_UPDATE, IMG_PATH_UPDATE);
     }
 
     public void setRelativePathUpdate(boolean relativePathUpdate) {
@@ -564,12 +562,36 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
     @Override
     public boolean getRelativePathPrependHost() {
-        // We use the old property as default value in case the new property is not used.
-        boolean value = getAsBoolean(IMG_PATH_PREPEND_HOST);
-        return getAsBoolean(RELATIVE_PATH_PREPEND_HOST, value);
+        return getAsBooleanDefaultTrue(RELATIVE_PATH_PREPEND_HOST, IMG_PATH_PREPEND_HOST);
     }
 
     public void setRelativePathPrependHost(boolean relativePathPrependHost) {
         setProperty(RELATIVE_PATH_PREPEND_HOST, relativePathPrependHost);
+    }
+
+    /**
+     * Check the first key {@code key1}, if not set, then check the another key {@code key2}.
+     *
+     * @param key1         the first key
+     * @param key2         the second key, this key is supported  to replace the first key.
+     * @param defaultValue if the default value for the key is true
+     * @return the composite final value
+     */
+    private boolean getAsBoolean(String key1, String key2, boolean defaultValue) {
+        boolean v1 = getAsBoolean(key1, defaultValue);
+        boolean v2 = getAsBoolean(key2, defaultValue);
+        if (defaultValue) {
+            return v1 && v2;
+        } else {
+            return v1 || v2;
+        }
+    }
+
+    private boolean getAsBooleanDefaultFalse(String key1, String key2) {
+        return getAsBoolean(key1, key2, false);
+    }
+
+    private boolean getAsBooleanDefaultTrue(String key1, String key2) {
+        return getAsBoolean(key1, key2, true);
     }
 }

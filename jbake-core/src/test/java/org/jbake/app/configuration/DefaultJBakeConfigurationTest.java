@@ -75,4 +75,17 @@ public class DefaultJBakeConfigurationTest {
         conf.setRelativePathPrependHost(false);
         getRelativePathPrependHost();
     }
+
+    @Test
+    public void testDefaultValue() {
+        boolean yes = conf.getImgPathUpdate();
+        assertThat(yes).isTrue();
+        boolean no = conf.getImgPathPrependHost();
+        assertThat(no).isFalse();
+
+        yes = conf.getRelativePathUpdate();
+        assertThat(yes).isTrue();
+        no = conf.getRelativePathPrependHost();
+        assertThat(no).isFalse();
+    }
 }
