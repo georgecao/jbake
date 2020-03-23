@@ -78,14 +78,14 @@ public class DefaultJBakeConfigurationTest {
 
     @Test
     public void testDefaultValue() {
-        boolean yes = conf.getImgPathUpdate();
+        boolean no = conf.getImgPathUpdate();
+        boolean yes = conf.getImgPathPrependHost();
         assertThat(yes).isTrue();
-        boolean no = conf.getImgPathPrependHost();
         assertThat(no).isFalse();
 
-        yes = conf.getRelativePathUpdate();
+        no = conf.getRelativePathUpdate();
+        yes = conf.getRelativePathPrependHost();
         assertThat(yes).isTrue();
-        no = conf.getRelativePathPrependHost();
         assertThat(no).isFalse();
     }
 }
