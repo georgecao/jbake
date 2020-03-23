@@ -4,6 +4,7 @@ import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.AttributesBuilder;
 import org.asciidoctor.Options;
 import org.asciidoctor.ast.DocumentHeader;
+import org.asciidoctor.jruby.internal.JRubyAsciidoctor;
 import org.jbake.app.configuration.JBakeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.asciidoctor.AttributesBuilder.attributes;
@@ -28,17 +25,15 @@ import static org.asciidoctor.SafeMode.UNSAFE;
  * @author Cédric Champeau
  */
 public class AsciidoctorEngine extends MarkupEngine {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AsciidoctorEngine.class);
     public static final String JBAKE_PREFIX = "jbake-";
     public static final String REVDATE_KEY = "revdate";
-
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private Asciidoctor engine;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsciidoctorEngine.class);
     /* comma separated file paths to additional gems */
     private static final String OPT_GEM_PATH = "gemPath";
     /* comma separated gem names */
     private static final String OPT_REQUIRES = "requires";
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private Asciidoctor engine;
 
     public AsciidoctorEngine() {
         Class engineClass = Asciidoctor.class;
@@ -55,7 +50,7 @@ public class AsciidoctorEngine extends MarkupEngine {
                     if (engine == null) {
                         LOGGER.info("Initializing Asciidoctor engine...");
                         if (options.map().containsKey(OPT_GEM_PATH)) {
-                            engine = Asciidoctor.Factory.create(String.valueOf(options.map().get(OPT_GEM_PATH)));
+                            engine = JRubyAsciidoctor.create(String.valueOf(options.map().get(OPT_GEM_PATH)));
                         } else {
                             engine = Asciidoctor.Factory.create();
                         }
@@ -98,7 +93,7 @@ public class AsciidoctorEngine extends MarkupEngine {
 
             if (hasJBakePrefix(key)) {
                 String pKey = key.substring(6);
-                if(canCastToString(value)) {
+                if (canCastToString(value)) {
                     storeHeaderValue(pKey, (String) value, documentModel);
                 } else {
                     documentModel.put(pKey, value);
@@ -159,7 +154,7 @@ public class AsciidoctorEngine extends MarkupEngine {
     private void processAsciiDoc(ParserContext context) {
         Options options = getAsciiDocOptionsAndAttributes(context);
         final Asciidoctor asciidoctor = getEngine(options);
-        context.setBody(asciidoctor.render(context.getBody(), options));
+        context.setBody(asciidoctor.convert(context.getBody(), options));
     }
 
     private Options getAsciiDocOptionsAndAttributes(ParserContext context) {

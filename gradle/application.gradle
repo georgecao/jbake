@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat
 
 buildscript {
     repositories {
+        maven {
+            url "https://maven.aliyun.com/repository/central"
+        }
         jcenter()
     }
     dependencies {
@@ -20,22 +23,21 @@ ext {
     examplesBase = "$project.buildDir/examples"
 
     exampleRepositories = [
-            "example_project_freemarker": "git://github.com/jbake-org/jbake-example-project-freemarker.git",
-            "example_project_groovy"    : "git://github.com/jbake-org/jbake-example-project-groovy.git",
-            "example_project_thymeleaf" : "git://github.com/jbake-org/jbake-example-project-thymeleaf.git",
-            "example_project_groovy-mte": "git://github.com/jbake-org/jbake-example-project-groovy-mte.git",
-            "example_project_jade"      : "git://github.com/jbake-org/jbake-example-project-jade.git"
+        "example_project_freemarker": "git://github.com/jbake-org/jbake-example-project-freemarker.git",
+        "example_project_groovy"    : "git://github.com/jbake-org/jbake-example-project-groovy.git",
+        "example_project_thymeleaf" : "git://github.com/jbake-org/jbake-example-project-thymeleaf.git",
+        "example_project_groovy-mte": "git://github.com/jbake-org/jbake-example-project-groovy-mte.git",
+        "example_project_jade"      : "git://github.com/jbake-org/jbake-example-project-jade.git"
     ]
 }
 
 processResources {
-    from("src/main/resources"){
+    from("src/main/resources") {
         include 'default.properties'
-        expand  jbakeVersion: project.version,
-                timestamp: new SimpleDateFormat("yyyy-MM-dd HH:mm:ssa").format( new Date() )
+        expand jbakeVersion: project.version,
+            timestamp: new SimpleDateFormat("yyyy-MM-dd HH:mm:ssa").format(new Date())
     }
 }
-
 
 
 //create clone and Zip Task for each repository
@@ -82,8 +84,8 @@ distributions {
 }
 
 startScripts {
-    defaultJvmOpts = ['-XX:MaxDirectMemorySize=512m','-Djna.nosys=true']
-    classpath = files("lib","logging")
+    defaultJvmOpts = ['-XX:MaxDirectMemorySize=512m', '-Djna.nosys=true']
+    classpath = files("lib", "logging")
 
     /**
      * The startScripts produces scripts that contain `$APP_HOME/lib/lib` in the classpath
