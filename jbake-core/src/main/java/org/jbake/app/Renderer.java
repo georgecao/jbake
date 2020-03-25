@@ -10,11 +10,7 @@ import org.jbake.util.PagingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +23,7 @@ import java.util.Map;
  */
 public class Renderer {
     private static final String MASTERINDEX_TEMPLATE_NAME = "masterindex";
+    private static final String TAG_INDEX_TEMPLATE_NAME = "tagsindex";
     private static final String SITEMAP_TEMPLATE_NAME = "sitemap";
     private static final String FEED_TEMPLATE_NAME = "feed";
     private static final String ARCHIVE_TEMPLATE_NAME = "archive";
@@ -204,9 +201,9 @@ public class Renderer {
                     String nextFileName = pagingHelper.getNextFileName(page);
                     model.put("nextFileName", nextFileName);
 
-                    Map<String, Object> contentModel =  buildSimpleModel(MASTERINDEX_TEMPLATE_NAME);
+                    Map<String, Object> contentModel = buildSimpleModel(MASTERINDEX_TEMPLATE_NAME);
 
-                    if(page > 1){
+                    if (page > 1) {
                         contentModel.put(Attributes.ROOTPATH, "../");
                     }
                     model.put("content", contentModel);
@@ -273,10 +270,9 @@ public class Renderer {
                 model.put(Attributes.TAG, tag);
                 Map<String, Object> map = buildSimpleModel(Attributes.TAG);
                 model.put("content", map);
-
                 File path = new File(config.getDestinationFolder() + File.separator + tagPath + File.separator + tag + config.getOutputExtension());
                 map.put(Attributes.ROOTPATH, FileUtil.getUriPathToDestinationRoot(config, path));
-                
+
                 render(new ModelRenderingConfig(path, Attributes.TAG, model, findTemplateName(Attributes.TAG)));
 
                 renderedCount++;
@@ -297,7 +293,7 @@ public class Renderer {
 
                 File path = new File(config.getDestinationFolder() + File.separator + tagPath + File.separator + "index" + config.getOutputExtension());
                 map.put(Attributes.ROOTPATH, FileUtil.getUriPathToDestinationRoot(config, path));
-                render(new ModelRenderingConfig(path, "tagindex", model, findTemplateName("tagsindex")));
+                render(new ModelRenderingConfig(path, "tagindex", model, findTemplateName(TAG_INDEX_TEMPLATE_NAME)));
                 renderedCount++;
             } catch (Exception e) {
                 errors.add(e);
@@ -411,7 +407,7 @@ public class Renderer {
          */
         public DefaultRenderingConfig(String allInOneName) {
             this(new File(config.getDestinationFolder().getPath() + File.separator + allInOneName + config.getOutputExtension()),
-                    allInOneName);
+                allInOneName);
         }
 
         @Override

@@ -95,7 +95,6 @@ public class Crawler {
                         if (status == DocumentStatus.UPDATED) {
                             sb.append(" : modified ");
                             db.deleteContent(docType, uri);
-
                         } else if (status == DocumentStatus.IDENTICAL) {
                             sb.append(" : same ");
                             process = false;
@@ -142,7 +141,7 @@ public class Crawler {
 
         // strip off leading / to enable generating non-root based sites
         if (uri.startsWith(FileUtil.URI_SEPARATOR_CHAR)) {
-            uri = uri.substring(1, uri.length());
+            uri = uri.substring(1);
         }
 
         return uri;
@@ -220,7 +219,13 @@ public class Crawler {
 
                 ODocument doc = new ODocument(documentType);
                 doc.fromMap(fileContents);
-                boolean cached = fileContents.get(String.valueOf(DocumentAttributes.CACHED)) != null ? Boolean.valueOf((String) fileContents.get(String.valueOf(DocumentAttributes.CACHED))) : true;
+
+                boolean cached = true;
+                Object cachedValue;
+                if (null != (cachedValue = fileContents.get(String.valueOf(DocumentAttributes.CACHED)))) {
+                    cached = Boolean.parseBoolean((String) cachedValue);
+                }
+
                 doc.field(String.valueOf(DocumentAttributes.CACHED), cached);
                 doc.save();
             } else {
@@ -238,7 +243,7 @@ public class Crawler {
     private DocumentStatus findDocumentStatus(String docType, String uri, String sha1) {
         DocumentList match = db.getDocumentStatus(docType, uri);
         if (!match.isEmpty()) {
-            Map entries = match.get(0);
+            Map<String, Object> entries = match.get(0);
             String oldHash = (String) entries.get(String.valueOf(DocumentAttributes.SHA1));
             if (!(oldHash.equals(sha1)) || Boolean.FALSE.equals(entries.get(String.valueOf(DocumentAttributes.RENDERED)))) {
                 return DocumentStatus.UPDATED;

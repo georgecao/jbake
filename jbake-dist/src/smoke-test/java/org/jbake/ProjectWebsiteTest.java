@@ -31,10 +31,9 @@ public class ProjectWebsiteTest {
     @Before
     public void setup() throws IOException, GitAPIException {
         Assume.assumeTrue("JDK 7 is not supported for this test", !isJava7());
-        if ( Os.isFamily(Os.OS_FAMILY_WINDOWS) ) {
+        if (Os.isFamily(Os.OS_FAMILY_WINDOWS)) {
             jbakeExecutable = new File("build\\install\\jbake\\bin\\jbake.bat").getAbsolutePath();
-        }
-        else {
+        } else {
             jbakeExecutable = new File("build/install/jbake/bin/jbake").getAbsolutePath();
         }
         projectFolder = folder.newFolder("project");
@@ -60,12 +59,12 @@ public class ProjectWebsiteTest {
 
         Git git = cmd.call();
 
-        assertThat(new File(projectFolder,"README.md").exists()).isTrue();
+        assertThat(new File(projectFolder, "README.md").exists()).isTrue();
     }
 
     @Test
     public void shouldBakeWebsite() throws IOException, InterruptedException {
-        Process process = runner.runWithArguments(jbakeExecutable,"-b");
+        Process process = runner.runWithArguments(jbakeExecutable, "-b");
         assertThat(process.exitValue()).isEqualTo(0);
         assertThat(new File(outputFolder, "index.html")).exists();
         process.destroy();

@@ -35,7 +35,7 @@ public class Baker {
         if (!errors.isEmpty()) {
             final StringBuilder msg = new StringBuilder();
             // TODO: decide, if we want the all errors here
-            msg.append( MessageFormat.format("JBake failed with {0} errors:\n", errors.size()));
+            msg.append(MessageFormat.format("JBake failed with {0} errors:\n", errors.size()));
             int errNr = 1;
             for (final Throwable error : errors) {
                 msg.append(MessageFormat.format("{0}. {1}\n", errNr, error.getMessage()));

@@ -42,11 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -69,6 +65,7 @@ public class ContentStore {
     private static final String STATEMENT_INSERT_TEMPLATES_SIGNATURE = "insert into Signatures(key,sha1) values('templates',?)";
     private static final String STATEMENT_DELETE_ALL = "delete from %s";
     private static final String STATEMENT_UPDATE_TEMPLATE_SIGNATURE = "update Signatures set sha1=? where key='templates'";
+    private static final String STATEMENT_GET_DOCUMENT_BY_URI = "select * from %s where sourceuri = ? ";
 
     private final Logger logger = LoggerFactory.getLogger(ContentStore.class);
     private final String type;
@@ -152,8 +149,7 @@ public class ContentStore {
     }
 
     public void shutdown() {
-
-//        Orient.instance().shutdown();
+        // Orient.instance().shutdown();
     }
 
     private void startupIfEnginesAreMissing() {
@@ -172,46 +168,47 @@ public class ContentStore {
 
     public void drop() {
         activateOnCurrentThread();
-//        db.drop();
-
+        // db.drop();
         orient.drop(name);
     }
 
     private void activateOnCurrentThread() {
-        if (db != null)
+        if (db != null) {
             db.activateOnCurrentThread();
-        else
+        } else {
             System.out.println("db is null on activate");
+        }
     }
 
 
     /**
      * Get a document by sourceUri and update it from the given map.
+     *
      * @param incomingDocMap The document's db columns.
      * @return The saved document.
      * @throws IllegalArgumentException if sourceUri or docType are null, or if the document doesn't exist.
      */
-    public ODocument mergeDocument(Map<String, ? extends Object> incomingDocMap)
-    {
+    public ODocument mergeDocument(Map<String, ? extends Object> incomingDocMap) {
         String sourceUri = (String) incomingDocMap.get(DocumentAttributes.SOURCE_URI.toString());
-        if (null == sourceUri)
+        if (null == sourceUri) {
             throw new IllegalArgumentException("Document sourceUri is null.");
+        }
         String docType = (String) incomingDocMap.get(Crawler.Attributes.TYPE);
-        if (null == docType)
+        if (null == docType) {
             throw new IllegalArgumentException("Document docType is null.");
+        }
 
         // Get a document by sourceUri
-        String sql = "SELECT * FROM " + docType + " WHERE sourceuri=?";
+        String sql = String.format(STATEMENT_GET_DOCUMENT_BY_URI, docType);
         activateOnCurrentThread();
         List<ODocument> results = db.command(new OSQLSynchQuery<ODocument>(sql)).execute(sourceUri);
-        if (results.size() == 0)
-            throw new JBakeException("No document with sourceUri '"+sourceUri+"'.");
-
+        if (results.size() == 0) {
+            throw new JBakeException("No document with sourceUri '" + sourceUri + "'.");
+        }
         // Update it from the given map.
         ODocument incomingDoc = new ODocument(docType);
         incomingDoc.fromMap(incomingDocMap);
-        ODocument merged = results.get(0).merge(incomingDoc, true, false);
-        return merged;
+        return results.get(0).merge(incomingDoc, true, false);
     }
 
 
@@ -229,7 +226,7 @@ public class ContentStore {
      * In fact, the URI should be the only input as there can only be one document at given URI; but the DB is split per document type for some reason.
      */
     public DocumentList getDocumentByUri(String docType, String uri) {
-        return query("select * from " + docType + " where sourceuri=?", uri);
+        return query(String.format(STATEMENT_GET_DOCUMENT_BY_URI, docType), uri);
     }
 
     public DocumentList getDocumentStatus(String docType, String uri) {

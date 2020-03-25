@@ -153,6 +153,15 @@ public class AsciidoctorEngine extends MarkupEngine {
 
     private void processAsciiDoc(ParserContext context) {
         Options options = getAsciiDocOptionsAndAttributes(context);
+        Map<String, Object> map = options.map();
+        Map<String, Object> attributes = (Map<String, Object>) map.get("attributes");
+        attributes.entrySet().stream()
+            .sorted((o1, o2) -> {
+                String k1 = o1.getKey();
+                String k2 = o2.getKey();
+                return k1.compareTo(k2);
+            }).forEach(entry -> System.out.println(entry.getKey() + "->" + entry.getValue()));
+
         final Asciidoctor asciidoctor = getEngine(options);
         context.setBody(asciidoctor.convert(context.getBody(), options));
     }

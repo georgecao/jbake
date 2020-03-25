@@ -78,20 +78,18 @@ public abstract class MarkupEngine implements ParserEngine {
         this.configuration = config;
         List<String> fileContents;
         try (InputStream is = new FileInputStream(file)) {
-
             fileContents = IOUtils.readLines(is, config.getRenderEncoding());
         } catch (IOException e) {
             LOGGER.error("Error while opening file {}", file, e);
-
             return null;
         }
 
         boolean hasHeader = hasHeader(fileContents);
         ParserContext context = new ParserContext(
-                file,
-                fileContents,
-                config,
-                hasHeader
+            file,
+            fileContents,
+            config,
+            hasHeader
         );
 
         if (hasHeader) {
@@ -220,7 +218,7 @@ public abstract class MarkupEngine implements ParserEngine {
 
             for (String line : subContents) {
                 // header should only contain empty lines or lines with '=' in
-                if (!line.contains("=") && !line.isEmpty())  {
+                if (!line.contains("=") && !line.isEmpty()) {
                     return false;
                 }
             }

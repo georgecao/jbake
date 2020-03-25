@@ -1,7 +1,6 @@
 package org.jbake.app;
 
 import com.orientechnologies.orient.core.db.record.OTrackedList;
-import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.sql.executor.OResult;
 import org.jbake.app.configuration.JBakeConfiguration;
 

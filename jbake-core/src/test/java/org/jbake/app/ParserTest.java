@@ -138,6 +138,7 @@ public class ParserTest {
         out.println("Test User <user@test.org>");
         out.println("2013-09-02");
         out.println(":jbake-status: published");
+        out.println(":jbake-tags: tag1, tag2, tag3, tag4, tag5");
         out.println(":jbake-type: page");
         out.println("");
         out.println("JBake now supports AsciiDoc.");
