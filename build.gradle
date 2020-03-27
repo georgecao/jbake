@@ -1,40 +1,42 @@
 plugins {
     id "eclipse"
     id "idea"
-    id "io.sdkman.vendors" version "1.1.1" apply false
-    id "com.jfrog.bintray" version "1.8.4" apply false
-    id "com.github.kt3k.coveralls" version "2.8.2" apply false
-    id "org.sonarqube" version "2.7" apply false
-    id 'com.github.ben-manes.versions' version '0.20.0'
-    id "nebula.optional-base" version "5.0.0" apply false
+    id "io.sdkman.vendors"              version "1.2.1"     apply false
+    id "com.jfrog.bintray"              version "1.8.4"     apply false
+    id "com.github.kt3k.coveralls"      version "2.10.1"     apply false
+    id "org.sonarqube"                  version "2.8"     apply false
+    id 'com.github.ben-manes.versions'  version '0.28.0'
+    id "nebula.optional-base"           version "5.0.3"     apply false
 }
 
 // common variables
 ext {
-    asciidoctorjVersion = '1.5.8.1'
-    asciidoctorjDiagramVersion = '1.5.11'
+    asciidoctorjVersion = '2.2.0'
+    asciidoctorjDiagramVersion = '2.0.1'
     commonsIoVersion = '2.6'
     commonsConfigurationVersion = '1.10'
-    commonsLangVersion = '3.8.1'
-    commonsVfs2Version = '2.2'
+    commonsConfiguration2Version = '1.10'
+    commonsLangVersion = '3.9'
+    commonsVfs2Version = '2.6.0'
     args4jVersion = '2.33'
-    freemarkerVersion = '2.3.28'
-    junit4Version = '4.12'
-    junit5Version = '5.6.0'
-    junitPioneer = '0.2.2'
-    flexmarkVersion = '0.40.8'
-    jettyServerVersion = '9.4.12.v20180830'
-    orientDbVersion = '3.0.14'
-    groovyVersion = '2.5.9'
-    slf4jVersion = '1.7.25'
+    freemarkerVersion = '2.3.30'
+    junit4Version = '4.13'
+    junit5Version = '5.6.1'
+    junitPioneer = '0.5.4'
+    flexmarkVersion = '0.60.2'
+    jettyServerVersion = '9.4.27.v20200227'
+    orientDbVersion = '3.0.30'
+    groovyVersion = '3.0.2'
+    slf4jVersion = '1.7.30'
     logbackVersion = '1.2.3'
-    assertjCoreVersion = '2.9.1'
+    assertjCoreVersion = '3.15.0'
     thymeleafVersion = '3.0.11.RELEASE'
     jsonSimpleVersion = '1.1.1'
-    jade4jVersion = '1.2.7'
-    mockitoVersion = '2.23.4'
-    jsoupVersion = '1.11.3'
-    pebbleVersion = '3.0.7'
+    jade4jVersion = '1.3.2'
+    mockitoVersion = '3.3.3'
+    jsoupVersion = '1.13.1'
+    pebbleVersion = '3.1.2'
+    jgitVersion = '5.7.0.202003110725-r'
 
     isTravis = (System.getenv("TRAVIS") == "true")
     isTravisPullRequest = (System.getenv("TRAVIS_PULL_REQUEST")) != "false"
@@ -59,7 +61,7 @@ apply plugin: 'com.github.kt3k.coveralls'
 allprojects {
     apply plugin: 'jacoco'
 
-    if (JavaVersion.current().isJava8Compatible()) {
+    if ( JavaVersion.current().isJava8Compatible() ) {
 
         apply plugin: 'checkstyle'
 
@@ -96,8 +98,8 @@ subprojects {
 
     apply from: "$rootDir/gradle/signing.gradle"
     // We do not publish any jars from the jbake-dist project
-    if (project.name != "jbake-dist") {
-        apply from: "$rootDir/gradle/maven-publishing.gradle"
+    if ( project.name != "jbake-dist" ) {
+      apply from: "$rootDir/gradle/maven-publishing.gradle"
     }
 
     // add source and target compatibility for all JavaCompile tasks
@@ -110,7 +112,7 @@ subprojects {
          *  See https://stackoverflow.com/questions/42599422/warning-options-bootstrap-class-path-not-set-in-conjunction-with-source-1-7
          */
         File file = file("${System.properties.getProperty("java.home")}/lib/rt.jar")
-        if (file.exists()) {
+        if ( file.exists() ) {
             options.setBootstrapClasspath(files(file))
         }
     }
@@ -154,12 +156,12 @@ subprojects {
     //set jvm for all Test tasks (like test and smokeTest)
     tasks.withType(Test) {
 
-        def args = ['-Xms512m', '-Xmx3g', '-Dorientdb.installCustomFormatter=false=false', '-Djna.nosys=true']
+        def args = ['-Xms512m', '-Xmx3g', '-Dorientdb.installCustomFormatter=false=false','-Djna.nosys=true']
 
         /**
          * AppVeyor breaks with mockito throwing a java.lang.OutOfMemoryError: PermGen space
          */
-        if (JavaVersion.current().java7) {
+        if ( JavaVersion.current().java7 ) {
             args << '-XX:MaxPermSize=2g'
         }
 
@@ -167,7 +169,7 @@ subprojects {
          * jdk9 build is unable to determine the amount of MaxDirectMemorySize
          * See https://pastebin.com/ECvQeHx0
          */
-        if (JavaVersion.current().java9Compatible) {
+        if ( JavaVersion.current().java9Compatible ) {
             args << '-XX:MaxDirectMemorySize=2g'
         }
         jvmArgs args
@@ -186,7 +188,7 @@ subprojects {
 task jacocoMerge(type: JacocoMerge) {
     description 'Merge all testreport execution data from subprojects excluding jbake-dist'
     dependsOn subprojects.test
-    executionData subprojects.findAll { it.name != "jbake-dist" }.jacocoTestReport.executionData
+    executionData subprojects.findAll{it.name!="jbake-dist"}.jacocoTestReport.executionData
 }
 
 task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
