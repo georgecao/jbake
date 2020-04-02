@@ -7,7 +7,8 @@ description = "The core library of JBake"
 
 dependencies {
     compile "commons-io:commons-io:$commonsIoVersion"
-    compile("commons-configuration:commons-configuration:$commonsConfigurationVersion") {
+    compile "commons-beanutils:commons-beanutils:$commonsBeanutilsVersion"
+    compile("org.apache.commons:commons-configuration2:$commonsConfiguration2Version") {
         exclude group: "commons-logging", module: "commons-logging"
     }
     compile("org.apache.commons:commons-vfs2:$commonsVfs2Version") {

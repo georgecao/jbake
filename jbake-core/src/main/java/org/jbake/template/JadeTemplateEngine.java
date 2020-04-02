@@ -11,7 +11,7 @@ import de.neuland.jade4j.model.JadeModel;
 import de.neuland.jade4j.template.FileTemplateLoader;
 import de.neuland.jade4j.template.JadeTemplate;
 import de.neuland.jade4j.template.TemplateLoader;
-import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.jbake.app.ContentStore;
 import org.jbake.app.configuration.JBakeConfiguration;

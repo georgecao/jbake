@@ -1,6 +1,6 @@
 package org.jbake.launcher;
 
-import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.jbake.TestUtils;
 import org.jbake.app.configuration.ConfigUtil;
 import org.jbake.app.configuration.DefaultJBakeConfiguration;
@@ -62,7 +62,7 @@ public class MainTest {
 
         verify(mockJetty).run(expectedOutput.getPath(),"8820");
     }
-    
+
     @Test
     public void launchBakeAndJetty() throws Exception {
         File sourceFolder = folder.newFolder("src", "jbake");
@@ -74,7 +74,7 @@ public class MainTest {
 
         verify(mockJetty).run(expectedOutput.getPath(),"8820");
     }
-    
+
     @Test
     public void launchBakeAndJettyWithCustomDirForJetty() throws ConfigurationException, IOException {
         mockValidSourceFolder("src/jbake", true);

@@ -1,6 +1,6 @@
 package org.jbake.template;
 
-import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.lang.LocaleUtils;
 import org.jbake.app.ContentStore;
 import org.jbake.app.Crawler.Attributes;

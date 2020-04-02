@@ -1,7 +1,7 @@
 package org.jbake.app;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.io.FilenameUtils;
 import org.jbake.app.Crawler.Attributes.Status;
 import org.jbake.app.configuration.JBakeConfiguration;
