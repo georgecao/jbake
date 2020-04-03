@@ -50,10 +50,9 @@ public class DelegatingTemplateEngine extends AbstractTemplateEngine {
             String key = configKeys.next();
             Object valueObject;
 
-            if ( key.equals(JBakeProperty.PAGINATE_INDEX) ){
+            if (key.equals(JBakeProperty.PAGINATE_INDEX)) {
                 valueObject = config.getPaginateIndex();
-            }
-            else {
+            } else {
                 valueObject = config.get(key);
             }
             //replace "." in key so you can use dot notation in templates
@@ -76,6 +75,7 @@ public class DelegatingTemplateEngine extends AbstractTemplateEngine {
                 }
             }
         }
+        LOGGER.info("Ready to render template {} with model: {}", templateName, model);
         String ext = FileUtil.fileExt(templateName);
         AbstractTemplateEngine engine = renderers.getEngine(ext);
         if (engine != null) {
