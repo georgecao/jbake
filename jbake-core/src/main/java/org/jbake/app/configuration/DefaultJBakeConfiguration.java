@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.jbake.app.configuration.PropertyList.*;
 
@@ -226,7 +227,6 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     public void setDatabaseStore(String storeType) {
         setProperty(DB_STORE.getKey(), storeType);
     }
-
 
 
     @Override
@@ -586,7 +586,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
         String destinationPath = getAsString(DESTINATION_FOLDER.getKey());
 
         File destination = new File(destinationPath);
-        if ( destination.isAbsolute() ) {
+        if (destination.isAbsolute()) {
             setDestinationFolder(destination);
         } else {
             setDestinationFolder(new File(getSourceFolder(), destinationPath));
@@ -598,7 +598,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
 
 
         File asset = new File(assetFolder);
-        if(asset.isAbsolute()) {
+        if (asset.isAbsolute()) {
             setAssetFolder(asset);
         } else {
             setAssetFolder(new File(getSourceFolder(), assetFolder));
@@ -609,7 +609,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
         String templateFolder = getAsString(TEMPLATE_FOLDER.getKey());
 
         File template = new File(templateFolder);
-        if(template.isAbsolute()) {
+        if (template.isAbsolute()) {
             setTemplateFolder(template);
         } else {
             setTemplateFolder(new File(getSourceFolder(), templateFolder));
@@ -620,7 +620,7 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
         String dataFolder = getAsString(DATA_FOLDER.getKey());
 
         File data = new File(dataFolder);
-        if(data.isAbsolute()) {
+        if (data.isAbsolute()) {
             setDataFolder(data);
         } else {
             setDataFolder(new File(getSourceFolder(), dataFolder));
@@ -645,8 +645,22 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
         return getAsBoolean(IMG_PATH_PREPEND_HOST.getKey());
     }
 
+    @Override
+    public boolean getRelativePathPrependHost() {
+        return getAsBoolean(RELATIVE_PATH_PREPEND_HOST.getKey());
+    }
+
+    public void setRelativePathPrependHost(boolean relativePathPrependHost) {
+        setBothPathPrependHost(relativePathPrependHost);
+    }
+
     public void setImgPathPrependHost(boolean imgPathPrependHost) {
-        setProperty(IMG_PATH_PREPEND_HOST.getKey(), imgPathPrependHost);
+        setBothPathPrependHost(imgPathPrependHost);
+    }
+
+    private void setBothPathPrependHost(boolean prependHost) {
+        setProperty(RELATIVE_PATH_PREPEND_HOST.getKey(), prependHost);
+        setProperty(IMG_PATH_PREPEND_HOST.getKey(), prependHost);
     }
 
     @Override
@@ -654,8 +668,13 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
         return getAsBoolean(IMG_PATH_UPDATE.getKey());
     }
 
-    public void setImgPathUPdate(boolean imgPathUpdate) {
-        setProperty(IMG_PATH_UPDATE.getKey(), imgPathUpdate);
+    public void setImgPathUpdate(boolean imgPathUpdate) {
+        setBothPathUpdate(imgPathUpdate);
+    }
+
+    public void setBothPathUpdate(boolean pathUpdate) {
+        setProperty(IMG_PATH_UPDATE.getKey(), pathUpdate);
+        setProperty(RELATIVE_PATH_UPDATE.getKey(), pathUpdate);
     }
 
     public List<Property> getJbakeProperties() {
@@ -692,5 +711,50 @@ public class DefaultJBakeConfiguration implements JBakeConfiguration {
     @Override
     public String getJvmLocale() {
         return getAsString(JVM_LOCALE.getKey());
+    }
+
+    @Override
+    public boolean getRelativePathUpdate() {
+        return getAsBoolean(RELATIVE_PATH_UPDATE.getKey());
+    }
+
+    public void setRelativePathUpdate(boolean relativePathUpdate) {
+        setBothPathUpdate(relativePathUpdate);
+    }
+
+    private static final String EQ = "=";
+    private static final String COMMA = ",";
+
+    @Override
+    public Map<String, String> getTagAttributes() {
+        List<String> pairs = getAsList(RELATIVE_TAG_ATTRIBUTE.getKey());
+        Map<String, String> tagAttribute = new HashMap<>();
+        for (String pair : pairs) {
+            int idx = pair.indexOf(EQ);
+            if (idx > 0) {
+                String tag = pair.substring(0, idx);
+                String attr = pair.substring(idx + 1);
+                tagAttribute.put(tag, attr);
+            }
+        }
+        return tagAttribute;
+    }
+
+    public void addTagAttribute(String tag, String attr) {
+        Map<String, String> all = new HashMap<>();
+        Map<String, String> map = getTagAttributes();
+        if (null != map) {
+            all.putAll(map);
+        }
+        all.put(tag, attr);
+        String val = all.entrySet().stream()
+            .map(e -> String.join(EQ, e.getKey(), e.getValue()))
+            .collect(Collectors.joining(COMMA));
+
+        setProperty(RELATIVE_TAG_ATTRIBUTE.getKey(), val);
+    }
+
+    public void setTagAttributes(String... tagAttributes) {
+        setProperty(RELATIVE_TAG_ATTRIBUTE.getKey(), StringUtils.join(tagAttributes, COMMA));
     }
 }
